@@ -1,0 +1,12 @@
+{
+    "$schema": "http://json-schema.org/schema",
+    "cli": "nx",
+    "title": "Build executor",
+    "description": "",
+    "type": "object",
+    "properties": {
+        "configurationStackFormat": { "type": "string" },
+        "bucket": { "type": "string" }
+    },
+    "required": ["bucket"]
+}

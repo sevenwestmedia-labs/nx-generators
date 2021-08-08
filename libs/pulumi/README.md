@@ -2,25 +2,69 @@
 
 NX Plugin for setting up Pulumi projects in an NX repo.
 
-## Usage
+## Generators
 
-### Creating a deployment project
+### init
 
 ```
 nx g @wanews/nx-pulumi:init
 ```
 
-### Running deploy
+## Executors
 
-@wanews/nx-pulumi will add a `deploy` target to the selected project.
+### up
 
-`nx deploy <your-project-name>`
+```
+nx up my-app-infrastructure --stack dev
+```
 
-This will start pulumi with a `--cwd` of the infrastructure project automatically. All arguments will be passed onto the pulumi CLI.
+#### env
 
-`nx deploy my-app --stack dev`
+`--env=prod`
 
-Under the hood, this will run the `up` against your infrastructure project.
+Will create the stack name by prefixing the pulumi project name. ie `--env=prod` is the same as `--stack=<projectname>.prod`.
+
+### create-stack
+
+```
+nx create-stack my-app-infrastructure --stack dev
+```
+
+#### env
+
+`--env=prod`
+
+Will create the stack name by prefixing the pulumi project name. ie `--env=prod` is the same as `--stack=<projectname>.prod`.
+
+### destroy-stack
+
+```
+nx destroy-stack my-app-infrastructure --stack dev
+```
+
+#### env
+
+`--env=prod`
+
+Will create the stack name by prefixing the pulumi project name. ie `--env=prod` is the same as `--stack=<projectname>.prod`.
+
+### config-backup
+
+Config files have the secret provider hashes so as an alternative to checking them into git you can use this command to put the config files into s3, then optionally restore them before doing an up
+
+### config-restore
+
+Config files have the secret provider hashes so as an alternative to checking them into git you can use this command to put the config files into s3, then optionally restore them before doing an up
+
+## Running deploy
+
+@wanews/nx-pulumi will add a `deploy` target to the selected project. This will start pulumi with a `--cwd` of the infrastructure project automatically
+
+All arguments will be passed onto the pulumi CLI.
+
+Under the hood, this will run the `up` against your infrastructure project. You can also run the `up` target against the infrastructure project
+
+`nx up my-app-infrastructure --stack dev`
 
 ### Affected deploys
 
@@ -64,20 +108,4 @@ All other commands you can just use the `--cwd apps/<my-app>-infrastructure` fla
 
 NX Mangles command line args, the issue is being tracked at https://github.com/nrwl/nx/issues/5710
 
-You can use `patch-package` to fix the issue:
-
-```
-pnpm add -WD patch-package
-```
-
-Edit `node_modules/@nrwl/cli/lib/parse-run-one-options.js`
-
-Add this configuration to the yargs initialisation
-
-```
-configuration: {
-    "camel-case-expansion": false
-}
-```
-
-run `pnpx patch-package @nrwl/cli` to generate the patch
+This package manually reverts the mangled command line args but the list of fixed commands is not up to date. Submit a pull request adding the mapped command to libs/pulumi/src/helpers/get-pulumi-args.ts

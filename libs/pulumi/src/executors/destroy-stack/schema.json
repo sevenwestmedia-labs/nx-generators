@@ -31,6 +31,7 @@
                 },
                 "required": ["project", "target"]
             }
-        }
+        },
+        "infrastructureProject": { "type": "string" }
     }
 }
